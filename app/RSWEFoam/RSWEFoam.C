@@ -24,7 +24,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    shallowWaterFoam
+    RSWEFoam
 
 Group
     grpIncompressibleSolvers
@@ -49,7 +49,8 @@ int main(int argc, char *argv[])
     (
         "Transient solver for inviscid shallow-water equations with rotation"
     );
-	#define NO_CONTROL
+
+    #define NO_CONTROL
 
     #include "postProcess.H"
 
@@ -59,9 +60,9 @@ int main(int argc, char *argv[])
     #include "createMesh.H"
     #include "createControl.H"
     #include "createFields.H"
-	#include "createFaceFields.H"
-	#include "createFaceFluxes.H"
-	#include "createFvOptions.H"
+    #include "createFaceFields.H"
+    #include "createFaceFluxes.H"
+    #include "createFvOptions.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 	

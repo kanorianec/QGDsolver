@@ -1,3 +1,0 @@
-Слабые места решателя:
-
-- updateFields.H "if (mag(hSum[celli]) > 1e-15)"
