@@ -1,0 +1,3 @@
+R2LSWEFoam.C
+
+EXE = $(FOAM_APPBIN)/R2LSWEFoam
