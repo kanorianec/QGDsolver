@@ -37,9 +37,19 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
+
 #include "fvCFD.H"
-#include "QGD.H"
+#include "wallFvPatch.H"
+#include "fvsc.H"
+//#include "twoPhaseIcoQGDThermo.H"
+#include "shallowWaterQGDThermo.H"
+#include "QGDInterpolate.H"
 #include "fvOptions.H"
+
+//#include "fvCFD.H"
+////#include "QGD.H"
+//#include "fvOptions.H"
+//#include "shallowWaterQGDThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -93,23 +103,7 @@ int main(int argc, char *argv[])
 	
 		
         Info<< "\n Time = " << runTime.timeName() << nl << endl;
-		/*
-		Info << "============ BEGIN ============" << endl;
-		cout.precision(15);
-		Info << h << endl;
-		//Info << jm << endl;
-		//Info << hf*Uf << endl;
-		//Info << hW << endl;
-		//Info << hU << endl;
-		Info << U << endl;
-		//Info << hUf*Uf << endl;
-		//Info << UhUf << endl; 
-		//Info << gradUf << endl; 
-		//Info << phiJmU << endl;
-		//Info << 0.5 * magg * fvc::div(phih2) << endl;
-		//Info << magg * hStar * fvc::grad(b) << endl;
-		Info << "============ END ============" << endl;
-		*/
+
         //#include "CourantNo.H"
 		
         

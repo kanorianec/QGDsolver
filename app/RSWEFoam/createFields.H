@@ -2,8 +2,8 @@
 #include "readShallowWaterProperties.H"
 
 
-
 Info<< "Reading field h\n" << endl;
+
 volScalarField h
 (
     IOobject
@@ -156,11 +156,15 @@ hTotal.write();
 
 //Info << hQGD_ << endl;
 
-volScalarField hQGD_
+volScalarField hQGD_ = thermo.hQGD();
+
+/*volScalarField hQGD_
 (
 	"hQGD",
 	Coeffs.hQGD()
-);
+);*/
+
+//scalar alpha = Coeffs.alphaQGD()
 
 volScalarField tau
 (

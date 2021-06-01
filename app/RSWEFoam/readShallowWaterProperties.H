@@ -1,5 +1,10 @@
 Info<< "\nReading shallowWaterProperties" << endl;
 
+shallowWaterQGDThermo thermo(mesh);
+thermo.correct();
+
+scalar alpha = thermo.alpha();
+
 IOdictionary shallowWaterProperties
 (
     IOobject
@@ -12,7 +17,7 @@ IOdictionary shallowWaterProperties
     )
 );
 
-scalar alpha(readScalar(shallowWaterProperties.lookup("alpha")));
+//scalar alpha(readScalar(shallowWaterProperties.lookup("alpha")));
 Switch wellBalancedScheme = false;
 Switch dryZoneCondition = false;
 scalar NS = 0.0;
@@ -44,11 +49,12 @@ if (shallowWaterProperties.found("tauU"))
 	shallowWaterProperties.lookup("tauU") >> tauU;
 }
 
- autoPtr<Foam::qgd::QGDCoeffs>  pCoeffs
+/* autoPtr<Foam::qgd::QGDCoeffs>  pCoeffs
 (
     Foam::qgd::QGDCoeffs::New(shallowWaterProperties.subDict("QGD").get<word>("QGDCoeffs"), mesh, shallowWaterProperties.subDict("QGD"))
 );
 Foam::qgd::QGDCoeffs& Coeffs = pCoeffs();
+*/
 
 //Coeffs.correct(NULL);
 

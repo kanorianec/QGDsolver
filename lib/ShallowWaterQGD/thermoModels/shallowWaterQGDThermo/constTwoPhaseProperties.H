@@ -10,79 +10,93 @@
     Copyright (C) 2016-2019 ISP RAS (www.ispras.ru) UniCFD Group (www.unicfd.ru)
 -------------------------------------------------------------------------------
 License
-    This file is part of QGDsolver library, based on OpenFOAM+.
-
+    This file is part of QGDsolver, based on OpenFOAM library.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+    
+Group
+    grpTwoPhaseIcoQGDThermo
+    
+Description
+    Constant properties for two phase package.
+    Templated into a given thermodynamics package (needed for thermal
+    conductivity).
+SourceFiles
+    constTwoPhaseProperties.C
+
 \*---------------------------------------------------------------------------*/
 
-#include "RSWEModel.H"
-#include "QGDThermo.H"
-#include "addToRunTimeSelectionTable.H"
-#include "linear.H"
+#ifndef constTwoPhaseProperties_H
+#define constTwoPhaseProperties_H
+
+#include "dictionary.H"
+#include "dimensionedType.H"
+#include "scalar.H"
+#include "word.H"
 
 namespace Foam
 {
-namespace qgd
+
+class constTwoPhaseProperties
 {
-    defineTypeNameAndDebug(RSWEModel,0);
-    addToRunTimeSelectionTable
-    (
-        QGDCoeffs,
-        RSWEModel,
-        dictionary
-    );
+
+    //-
+    dimensionedScalar nu1_;
+    
+    //-
+    dimensionedScalar nu2_;
+    
+    //-
+    dimensionedScalar rho1_;
+    
+    //-
+    dimensionedScalar rho2_;
+    
+    //-
+    dimensionedScalar Tau1_;
+    
+    //-
+    dimensionedScalar Tau2_;
+
+public:
+
+    //-
+    constTwoPhaseProperties(const dictionary& dict, const word& phase1name, const word& phase2name);
+    
+    //-
+    ~constTwoPhaseProperties();
+
+    //-
+    const dimensionedScalar& nu1() const;
+    
+    //-
+    const dimensionedScalar& nu2() const;
+    
+    //-
+    const dimensionedScalar& rho1() const;
+    
+    //-
+    const dimensionedScalar& rho2() const;
+    
+    //-
+    const dimensionedScalar& Tau1() const;
+    
+    //-
+    const dimensionedScalar& Tau2() const;
+
+};
+
 }
-}
 
-Foam::qgd::
-RSWEModel::RSWEModel
-(
-    const IOobject& io,
-    const fvMesh& mesh,
-    const dictionary& dict
-)
-:
-    QGDCoeffs(io, mesh, dict)
-	//, UQHD_(0.0)
-{
-    scalar ScQGD = 0.0, PrQGD = 1.0;
-
-    //dict.lookup("UQHD") >> UQHD_;
-
-    ScQGD_.primitiveFieldRef() = ScQGD;
-    PrQGD_.primitiveFieldRef() = PrQGD;
-    muQGD_.primitiveFieldRef() = 0.0;
-    alphauQGD_.primitiveFieldRef() = 0.0;
-
-    ScQGD_.boundaryFieldRef() = ScQGD;
-    PrQGD_.boundaryFieldRef() = PrQGD;
-    muQGD_.boundaryFieldRef() = 0.0;
-    alphauQGD_.boundaryFieldRef() = 0.0;
-}
-
-Foam::qgd::
-RSWEModel::~RSWEModel()
-{
-}
-
-void Foam::qgd::
-RSWEModel::correct(const Foam::QGDThermo& qgdThermo)
-{
-	Info << this->aQGD_ << endl;
-    //this->tauQGD_ = this->aQGD_ * this->hQGD_ /dimensionedScalar("UQGD", dimLength/dimTime, UQHD_);
-    //this->tauQGDf_= linearInterpolate(this->tauQGD_);
-}
+#endif
 
 //
 //END-OF-FILE

@@ -16,8 +16,7 @@ FoamFile
 
 QGD
 {
-    QGDCoeffs		RSWEModel;
-    alphaQGD	0.3;
+    QGDCoeffs		RSWETau;
 }
 
 alpha        0.1;
