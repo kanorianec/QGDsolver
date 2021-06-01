@@ -2,7 +2,8 @@
 cd ${0%/*} || exit 1    # run from this directory
 set -x
 
-wmake $*
-
+# wclean libso BCs
+wclean
+# wclean rhoCentralDyMFoam
 
 # ----------------------------------------------------------------- end-of-file

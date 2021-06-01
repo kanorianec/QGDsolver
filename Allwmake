@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd lib
-./Allwmake
+./Allwmake $*
 rc=$?
 cd ../
 if [ "$rc" = "0" ] 
@@ -13,7 +13,7 @@ else
 fi
 
 cd app 
-./Allwmake
+./Allwmake $*
 rc=$?
 cd ../
 if [ "$rc" = "0" ] 

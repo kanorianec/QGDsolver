@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd QGDFoam; ./Allwmake
+cd QGDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "QGDFoam compiled"
@@ -10,7 +10,7 @@ else
 fi
 cd ../
 
-cd QHDFoam; ./Allwmake
+cd QHDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "QHDFoam compiled"
@@ -20,7 +20,7 @@ else
 fi
 cd ../
 
-cd mulesQHDFoam; ./Allwmake
+cd mulesQHDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "mulesQHDFoam compiled"
@@ -30,7 +30,7 @@ else
 fi
 cd ../
 
-cd zQGDFoam; ./Allwmake
+cd zQGDFoam; ./Allwmake $*
 rc=$?
 if [ $rc -eq 0 ]; then
     echo "zQGDFoam compiled"
@@ -40,7 +40,7 @@ else
 fi
 cd ../
 
-cd interQHDFoam; ./Allwmake
+cd interQHDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "interQHDFoam compiled"
@@ -50,7 +50,7 @@ else
 fi
 cd ../
 
-cd particlesQGDFoam; ./Allwmake
+cd particlesQGDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "particlesQGDFoam compiled"
@@ -60,7 +60,7 @@ else
 fi
 cd ../
 
-cd particlesQHDFoam; ./Allwmake
+cd particlesQHDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "particlesQHDFoam compiled"
@@ -70,7 +70,7 @@ else
 fi
 cd ../
 
-cd QHDDyMFoam; ./Allwmake
+cd QHDDyMFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "QHDDyMFoam compiled"
@@ -80,7 +80,7 @@ else
 fi
 cd ../
 
-cd SRFQHDFoam; ./Allwmake
+cd SRFQHDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "SRFQHDFoam compiled"
@@ -90,7 +90,7 @@ else
 fi
 cd ../
 
-cd reactingLagrangianQGDFoam; ./Allwmake
+cd reactingLagrangianQGDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "reactingLagrangianQGDFoam compiled"
@@ -100,7 +100,7 @@ else
 fi
 cd ../
 
-cd scalarTransportQHDFoam; ./Allwmake
+cd scalarTransportQHDFoam; ./Allwmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "scalarTransportQHDFoam compiled"
@@ -110,7 +110,17 @@ else
 fi
 cd ../
 
-cd utils/selectBadCells; wmake
+cd RSWEFoam; ./Allwmake $*
+rc=$?
+if [ "$rc" = '0' ]; then
+    echo "RSWEFoam compiled"
+else
+    echo "RSWEFoam compiled with errors "
+    exit -1
+fi
+cd ../
+
+cd utils/selectBadCells; wmake $*
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "util selectBadCells compiled"
