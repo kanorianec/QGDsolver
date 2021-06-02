@@ -66,31 +66,62 @@ else
 } 
 
 tauf = qgdInterpolate(tau);
-//tauf = alpha * hQGDf_ / sqrt(magg * hf);
 
 if (wellBalancedScheme)
 {
-	hSum = fvc::surfaceIntegrate(hf * mesh.Sf().component(vector::X));
-
-	hhSum = 0.5*fvc::surfaceIntegrate(hf * hf * mesh.Sf().component(vector::X));
+	hSumX = fvc::surfaceIntegrate(hf * mesh.Sf().component(vector::X));
+	hhSumX = 0.5*fvc::surfaceIntegrate(hf * hf * mesh.Sf().component(vector::X));
+    
+    hSumY = fvc::surfaceIntegrate(hf * mesh.Sf().component(vector::Y));
+	hhSumY = 0.5*fvc::surfaceIntegrate(hf * hf * mesh.Sf().component(vector::Y));
 
 	forAll(h_,celli)
 	{
-
-		if (mag(hSum[celli]) > 1e-15) //0.5*h[celli]
+		if (mag(hSumX[celli]) > 1e-15)
 		{
-			h_[celli] = hhSum[celli] / hSum[celli];
+			h_[celli].component(vector::X) = hhSumX[celli] / hSumX[celli];           
 		}
 		else
 		{
-			h_[celli] = h[celli];
+            h_[celli].component(vector::X) = h[celli];
+			//h_[celli] = h[celli];
+		}
+        if (mag(hSumY[celli]) > 1e-15)
+		{
+            h_[celli].component(vector::Y) = hhSumY[celli] / hSumY[celli];
+		}
+		else
+		{
+            h_[celli].component(vector::Y) = h[celli];
+			//h_[celli] = h[celli];
 		}
 	}
-	
-	hStar = h_;
+    
+    volVectorField gradB = fvc::grad(b);
+    
+    vector e1(1, 0, 0);
+    vector e2(0, 1, 0);
+    vector e3(0, 0, 1);
+    
+    ghGradB =  e1 * magg * h_.component(vector::X) * gradB.component(vector::X) + e2 * magg * h_.component(vector::Y) * gradB.component(vector::Y) + 
+            e3 * magg * h * gradB.component(vector::Z);   
+    
+    
+    //ghGradB.value().component(vector::X) = magg * h_.component(vector::X) * gradB.component(vector::X);
+    //ghGradB.value().component(vector::Y) = magg * h_.component(vector::Y) * gradB.component(vector::Y);
+    //ghGradB.value().component(vector::Z) = magg * h;//* gradB.component(vector::Z);
+    
+    //volVectorField newGradB = ghGradB / magg;
+    
+    //Info << "h - hx -> " << mag(h_.component(vector::X) - h) << endl << endl;
+	//Info << "h - hy -> " << mag(h_.component(vector::Y) - h) << endl << endl;
+	hStar = h_.component(vector::X);
+    
+    Info << "magg * hStar * fvc::grad(b) - ghGradB -> " << magg * hStar * fvc::grad(b) - ghGradB << endl;
 }
 else
 {
+    ghGradB = magg*h*fvc::grad(b);
 	hStar = h;
 }
 
@@ -99,15 +130,5 @@ nuf = tauf * magg * hf;
 divPiNS = fvc::laplacian(nuf * hf,U)
         +
 		fvc::div(nuf * hf * mesh.Sf() & qgdInterpolate(Foam::T(fvc::grad(U))));
-
-//hStar -= tau * fvc::div(hU);
-//hStar -= tau * fvc::div(hUf & mesh.Sf());
-
-
-// Nonlinear Tensor
-//UrhoUf = qgdInterpolate(U*rhoU);
-
-//Speed of sound
-//cf = qgdInterpolate(thermo.c());
 
 // ************************************************************************* //

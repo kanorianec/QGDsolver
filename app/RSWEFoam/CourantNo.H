@@ -40,8 +40,8 @@ if (mesh.nInternalFaces())
 {
     scalarField sumPhi
     (
-        fvc::surfaceSum(mag(phi))().primitiveField()
-      / h.primitiveField()
+        fvc::surfaceSum(mag(phiJm))().primitiveField()
+      / gMax(h.primitiveField())
     );
 
     CoNum = 0.5*gMax(sumPhi/mesh.V().field())*runTime.deltaTValue();
@@ -58,6 +58,8 @@ if (mesh.nInternalFaces())
         )().primitiveField()/mesh.V().field()
     )*sqrt(magg).value()*runTime.deltaTValue();
 }
+
+Info<< "deltaT = " <<  runTime.deltaTValue() << endl;
 
 Info<< "Courant number mean: " << meanCoNum
     << " max: " << CoNum << endl;

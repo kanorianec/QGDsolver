@@ -6,50 +6,53 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2016 OpenFOAM Foundation
+    Copyright (C) 2019 OpenCFD Ltd.
+    Copyright (C) 2016-2019 ISP RAS (www.ispras.ru) UniCFD Group (www.unicfd.ru)
 -------------------------------------------------------------------------------
 License
-    This file is part of OpenFOAM.
-
+    This file is part of QGDsolver library, based on OpenFOAM+.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
-
 Application
     RSWEFoam
-
-Group
-    grpIncompressibleSolvers
-
 Description
-    Transient solver for inviscid shallow-water equations with rotation.
-
-    If the geometry is 3D then it is assumed to be one layers of cells and the
-    component of the velocity normal to gravity is removed.
-
+    Solver for inviscid  shallow water flows governed by 
+    regularized shallow water equations (RSWE). 
+    The regularization method is based on quasi-gasdynamic approach (QGD).
+    RSWE has been developed by scientific group from
+    Keldysh Institute of Applied Mathematics,
+    see http://elizarova.imamod.ru/selection-of-papers.html
+    A comprehensive description of RSWE equations and their applications
+    can be found here:
+    \verbatim
+    Elizarova, T.G. Bulatov O.V. "Regularized Shallow Water Equations and 
+    an Efficient Method for Numerical Simulation of Shallow Water Flows."
+    J. Computational Mathematics and Mathematical Physics,  
+    2011, Vol. 51, No 1, pp. 160-173.
+    \endverbatim
+    A brief of theory on QGD and QHD system of equations:
+    \verbatim
+    Elizarova, T.G. and Sheretov, Y.V.
+    "Theoretical and numerical analysis of quasi-gasdynamic and quasi-hydrodynamic
+    equations"
+    J. Computational Mathematics and Mathematical Physics, vol. 41, no. 2, pp 219-234,
+    2001
+    \endverbatim
+    Developed by UniCFD group (www.unicfd.ru) of ISP RAS (www.ispras.ru).
 \*---------------------------------------------------------------------------*/
 
-
 #include "fvCFD.H"
-#include "wallFvPatch.H"
-#include "fvsc.H"
-//#include "twoPhaseIcoQGDThermo.H"
-#include "shallowWaterQGDThermo.H"
-#include "QGDInterpolate.H"
+#include "QGD.H"
 #include "fvOptions.H"
-
-//#include "fvCFD.H"
-////#include "QGD.H"
-//#include "fvOptions.H"
-//#include "shallowWaterQGDThermo.H"
+#include "shallowWaterQGDThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -74,14 +77,13 @@ int main(int argc, char *argv[])
     #include "createFaceFluxes.H"
     #include "createFvOptions.H"
 
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-	
-	//Info << Foam::qgd::QGDCoeffs::hQGD() << endl;
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * /
 
     Info<< "\nStarting time loop\n" << endl;
 
     while (runTime.loop())
     {
+
 		/*
          *
          * Update fields
@@ -104,8 +106,7 @@ int main(int argc, char *argv[])
 		
         Info<< "\n Time = " << runTime.timeName() << nl << endl;
 
-        //#include "CourantNo.H"
-		
+        #include "CourantNo.H"		
         
 		solve
 		(
@@ -113,24 +114,6 @@ int main(int argc, char *argv[])
 			+
 			fvc::div(phiJm)
 		);		
-		
-		/*
-		solve
-		(
-			fvm::ddt(hU)
-			+
-			fvc::div(phiJmU)
-			+ 
-			0.5 * magg * hStar * 
-			(
-				fvc::grad(ksi)
-			)
-			-
-			magg * tau * fvc::div(hU) * fvc::grad(b)
-			-
-			fvc::div(phiPi)
-		);*/
-		
 		
 		solve
 		(
@@ -140,7 +123,8 @@ int main(int argc, char *argv[])
 			+ 
 			0.5 * magg * fvc::div(phih2)
 			+ 
-			magg * hStar * fvc::grad(b)
+            ghGradB
+			//magg * hStar * fvc::grad(b)
 			-
 			fvc::div(phiPi)
 			- 

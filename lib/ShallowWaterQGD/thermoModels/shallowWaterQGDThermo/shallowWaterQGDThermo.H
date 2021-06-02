@@ -69,6 +69,21 @@ protected:
     
     //- Tuning parameter alpha
     scalar alpha_;   
+    
+    //- using well-balanced scheme flag
+    Switch wellBalancedScheme_;
+    
+    //- using dry zone condition flag
+    Switch dryZoneCondition_; 
+    
+    //- Additional regularizer of the type of Navier–Stokes viscosity coefficient
+    scalar NS_;
+    
+    //- cut-off parameter for dry zone condition
+    scalar eps0_;
+    
+    // Additional term for calculating tau
+    scalar tauU_;
      
     //- Construct as copy (not implemented)
     shallowWaterQGDThermo(const shallowWaterQGDThermo&);
@@ -102,6 +117,21 @@ public:
     
     //-
     const scalar& alpha() const;
+    
+    //-
+    const scalar& NS() const;
+    
+    //-
+    const scalar& eps0() const;
+    
+    //-
+    const scalar& tauU() const;
+    
+    //-
+    const Switch& wellBalancedScheme() const;
+    
+    //-
+    const Switch& dryZoneCondition() const;
     
     //-
     virtual const volScalarField& p() const;

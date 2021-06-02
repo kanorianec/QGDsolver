@@ -17,19 +17,6 @@ volScalarField h
     mesh
 );
 
-volScalarField h_
-(
-    IOobject
-    (
-        "h_",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    h
-);
-
 volScalarField hStar
 (
     IOobject
@@ -56,6 +43,20 @@ volScalarField b
     ),
     h*0
 );
+
+volVectorField h_
+(
+    IOobject
+    (
+        "h_",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    h*fvc::grad(b)
+);
+
 volScalarField ksi
 (
     IOobject
@@ -80,20 +81,6 @@ volScalarField epsilon
     ),
     h*0
 );
-/*
-Info<< "Reading field h0 if present\n" << endl;
-volScalarField h0
-(
-    IOobject
-    (
-        "h0",
-        runTime.findInstance("polyMesh", "points"),
-        mesh,
-        IOobject::READ_IF_PRESENT
-    ),
-    mesh,
-    dimensionedScalar(dimLength, Zero)
-);*/
 
 Info<< "Creating field hU\n" << endl;
 volVectorField hU
@@ -135,36 +122,8 @@ volVectorField divPiNS
     ),
     U*mag(U)
 );
-/*
-Info<< "Creating field hTotal for post processing\n" << endl;
-volScalarField hTotal
-(
-    IOobject
-    (
-        "hTotal",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    h+h0
-);
-hTotal.write();
-*/
-
-//Info << hQGDf_ << endl;
-
-//Info << hQGD_ << endl;
 
 volScalarField hQGD_ = thermo.hQGD();
-
-/*volScalarField hQGD_
-(
-	"hQGD",
-	Coeffs.hQGD()
-);*/
-
-//scalar alpha = Coeffs.alphaQGD()
 
 volScalarField tau
 (
@@ -178,7 +137,7 @@ volScalarField tau
     ),
     alpha*hQGD_/sqrt(magg*max(h,dimensionedScalar("h0", dimLength, 1e-6)))
 );
-volScalarField hSum
+volScalarField hSumX
 (
     IOobject
     (
@@ -192,7 +151,7 @@ volScalarField hSum
     dimensionedScalar("hSum", dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 )
 );
 
-volScalarField hhSum
+volScalarField hhSumX
 (
     IOobject
     (
@@ -206,18 +165,47 @@ volScalarField hhSum
     dimensionedScalar("hhSum", dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 )
 );
 
-/*surfaceScalarField tau
+volScalarField hSumY
 (
-    "rhof",
-    linearInterpolate(rho)
-);*/
+    IOobject
+    (
+        "hSum",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("hSum", dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 )
+);
 
-#include "createPhi.H"
+volScalarField hhSumY
+(
+    IOobject
+    (
+        "hhSum",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("hhSum", dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 )
+);
 
-Info<< "Creating Coriolis Force" << endl;
-const dimensionedVector F("F", ((2.0*Omega) & gHat)*gHat);
+volVectorField ghGradB
+(
+    IOobject
+    (
+        "ghgradB",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    magg*h*fvc::grad(b)
+);
 
-mesh.setFluxRequired(h.name());
 
 if (dryZoneCondition)
 {
@@ -227,14 +215,11 @@ if (dryZoneCondition)
 	{
         
         labelList neighbours = mesh.cellCells()[cellI];
-        //Info << "cell neighbours of " << b[cellI] << nl;
         scalar deltaB = 0.0;
         forAll(neighbours,cellJ)
         {
             deltaB = max(deltaB,mag(b[neighbours[cellJ]] - b[cellI]));
-            //Info << b[neighbours[cellJ]] << " ";
         }
         epsilon[cellI] = max(eps0,deltaB);
-        //max(eps0, deltaB);
 	}
 }

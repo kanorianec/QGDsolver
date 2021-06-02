@@ -63,7 +63,38 @@ Foam::shallowWaterQGDThermo::shallowWaterQGDThermo(const fvMesh& mesh)
     validateQGDCoeffs();
     this->read();
     this->lookup("alpha") >> alpha_;
-    //alpha_("alpha",*this)
+    
+    wellBalancedScheme_ = false;
+    dryZoneCondition_ = false;
+    NS_ = 0.0;
+    eps0_ = 1e-6;
+    tauU_ = 0;
+
+    if (this->found("wellBalancedScheme"))
+    {
+        this->lookup("wellBalancedScheme") >> wellBalancedScheme_;
+    }
+
+    if (this->found("NS"))
+    {
+        this->lookup("NS") >> NS_;
+    }
+
+    if (this->found("dryZoneCondition"))
+    {   
+        this->lookup("dryZoneCondition") >> dryZoneCondition_;
+    }
+
+    if (this->found("eps0"))
+    {   
+        this->lookup("eps0") >> eps0_;
+    }
+
+    if (this->found("tauU"))
+    {   
+        this->lookup("tauU") >> tauU_;
+    }
+    
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -100,6 +131,30 @@ const Foam::scalar& Foam::shallowWaterQGDThermo::alpha() const
     return alpha_;
 }
 
+const Foam::scalar& Foam::shallowWaterQGDThermo::NS() const
+{
+    return NS_;
+}
+
+const Foam::scalar& Foam::shallowWaterQGDThermo::eps0() const
+{
+    return eps0_;
+}
+
+const Foam::scalar& Foam::shallowWaterQGDThermo::tauU() const
+{
+    return tauU_;
+}
+
+const Foam::Switch& Foam::shallowWaterQGDThermo::dryZoneCondition() const
+{
+    return dryZoneCondition_;
+}
+
+const Foam::Switch& Foam::shallowWaterQGDThermo::wellBalancedScheme() const
+{
+    return wellBalancedScheme_;
+}
 
 const Foam::volScalarField& Foam::shallowWaterQGDThermo::c() const
 {
