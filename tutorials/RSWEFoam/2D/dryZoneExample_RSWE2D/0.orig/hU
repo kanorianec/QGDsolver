@@ -9,17 +9,27 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    object      shallowWaterProperties;
+    class       volVectorField;
+    location    "0";
+    object      hU;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-QGD
+dimensions      [0 2 -1 0 0 0 0];
+
+internalField   uniform (0.0 0 0);
+
+boundaryField
 {
-    QGDCoeffs		RSWETau;
+    walls
+    {
+        type            slip;
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
 }
 
-alpha        0.2;
-//NS	     0.5;
 
 // ************************************************************************* //

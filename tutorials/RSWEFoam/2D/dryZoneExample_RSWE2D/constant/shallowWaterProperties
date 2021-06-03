@@ -19,7 +19,12 @@ QGD
     QGDCoeffs		RSWETau;
 }
 
-alpha        0.2;
-//NS	     0.5;
+alpha		0.5;
+eps0		0.001;
+wellBalancedScheme	true;
+dryZoneCondition	true;
+NS		1;
+tauU		1;
+
 
 // ************************************************************************* //

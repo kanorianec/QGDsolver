@@ -1,0 +1,2 @@
+funkySetFields -create -field b -expression '(pos().x - 10)*(pos().x - 10)/40 + (pos().y - 10)*(pos().y - 10)/40' -dimension '[0 1 0 0 0 0 0]' -time 0
+funkySetFields -create -field h -expression '(pos().x - 10)*(pos().x - 10) + (pos().y - 10)*(pos().y - 10) <= 4  ? 4 : 0' -dimension '[0 1 0 0 0 0 0]' -time 0

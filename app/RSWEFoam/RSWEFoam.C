@@ -58,13 +58,7 @@ Description
 
 int main(int argc, char *argv[])
 {
-    argList::addNote
-    (
-        "Transient solver for inviscid shallow-water equations with rotation"
-    );
-
     #define NO_CONTROL
-
     #include "postProcess.H"
 
     #include "addCheckCaseOptions.H"
@@ -124,7 +118,6 @@ int main(int argc, char *argv[])
 			0.5 * magg * fvc::div(phih2)
 			+ 
             ghGradB
-			//magg * hStar * fvc::grad(b)
 			-
 			fvc::div(phiPi)
 			- 
@@ -133,6 +126,11 @@ int main(int argc, char *argv[])
 		
         if (!dryZoneCondition)
         {
+            if (gMin(h) <= 0)
+            {
+                FatalErrorIn("RSWEFoam.C") << "Can't calculate cases h <=0 without dryZoneCondition = true." << nl << exit(FatalError);
+            }
+            Info << gMin(h) << endl;
             U == hU/h;
         }
         else

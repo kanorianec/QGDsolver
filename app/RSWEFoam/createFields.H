@@ -17,19 +17,6 @@ volScalarField h
     mesh
 );
 
-volScalarField hStar
-(
-    IOobject
-    (
-        "h*",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    h
-);
-
 //bathymetry
 volScalarField b
 (
@@ -148,7 +135,7 @@ volScalarField hSumX
         IOobject::NO_WRITE
     ),
     mesh,
-    dimensionedScalar("hSum", dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 )
+    dimensionedScalar("hSumX", dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 )
 );
 
 volScalarField hhSumX
@@ -162,7 +149,7 @@ volScalarField hhSumX
         IOobject::NO_WRITE
     ),
     mesh,
-    dimensionedScalar("hhSum", dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 )
+    dimensionedScalar("hhSumX", dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 )
 );
 
 volScalarField hSumY
@@ -176,7 +163,7 @@ volScalarField hSumY
         IOobject::NO_WRITE
     ),
     mesh,
-    dimensionedScalar("hSum", dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 )
+    dimensionedScalar("hSumY", dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 )
 );
 
 volScalarField hhSumY
@@ -190,7 +177,35 @@ volScalarField hhSumY
         IOobject::NO_WRITE
     ),
     mesh,
-    dimensionedScalar("hhSum", dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 )
+    dimensionedScalar("hhSumY", dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 )
+);
+
+volScalarField hSumZ
+(
+    IOobject
+    (
+        "hSum",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("hSumZ", dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 )
+);
+
+volScalarField hhSumZ
+(
+    IOobject
+    (
+        "hhSum",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("hhSumZ", dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 )
 );
 
 volVectorField ghGradB

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd QGD; wmake $* libso
+cd QGD; wmake libso
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "QGD compiled"
@@ -10,7 +10,7 @@ else
 fi
 cd ../
 
-cd TwoPhaseQGD; wmake $* libso
+cd TwoPhaseQGD; wmake libso
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "twoPhaseQGD compiled"
@@ -20,7 +20,7 @@ else
 fi
 cd ../
 
-cd ShallowWaterQGD; wmake $* libso
+cd ShallowWaterQGD; wmake libso
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "shallowWaterQGD compiled"
@@ -30,7 +30,7 @@ else
 fi
 cd ../
 
-cd CombustionQGD; wmake $* libso
+cd CombustionQGD; wmake libso
 rc=$?
 if [ $rc -eq 0 ]; then
     echo "CombustionQGD compiled"
@@ -40,7 +40,7 @@ else
 fi
 cd ../
 
-cd ChemistryQGD; wmake $* libso
+cd ChemistryQGD; wmake libso
 rc=$?
 if [ "$rc" = '0' ]; then
     echo "ChemistryQGD compiled"

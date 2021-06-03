@@ -43,20 +43,6 @@ gradksif = fvsc::grad(ksi);
 //---------End---------
 
 //Continuity equation fluxes
-//---------Start---------
-/*hW = tauf *
-        (
-            ((Uf * gradhf) & Uf)
-            +
-            (hUf * divUf)
-            +
-            (hUf & gradUf)
-			+
-			magg * hf * gradksif
-        );*/
-		
-//Info << "1: " << (Uf * divhUf) << endl;
-//Info << "2: " << (((Uf * gradhf) & Uf) + (hUf * divUf)) << endl;
 
 hW = tauf *
         (
@@ -91,12 +77,10 @@ Pif =
     tauf *
     (
 		I * ( magg * hf * divhUf)
-        //I * ( magg * hf * ((Uf & gradhf) + (hf * divUf)))
     );
 	
 phiPi = mesh.Sf() & Pif;
 
-//phiw = mesh.Sf() & hW;
 //---------End---------	
 		
 // ************************************************************************* //

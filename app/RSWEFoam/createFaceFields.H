@@ -30,12 +30,6 @@ Description
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-/*surfaceScalarField hQGDf_
-(
-	"hQGDf",
-	1.0 / mag(mesh.surfaceInterpolation::deltaCoeffs())
-);*/
-
 // Velocity
 surfaceVectorField Uf
 (
@@ -50,12 +44,6 @@ surfaceScalarField hf
     linearInterpolate(h)
 );
 
-/*surfaceScalarField tauf
-(
-    "tauf",
-    alpha * hQGDf_ / sqrt(magg * hf)
-);
-*/
 surfaceScalarField tauf
 (
     "tauf",

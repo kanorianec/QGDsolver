@@ -47,10 +47,14 @@ hUf = qgdInterpolate(hU);
 
 // Nonlinear Tensor
 UhUf = hf*Uf*Uf;
-//qgdInterpolate(U*hU);
 
 if (!dryZoneCondition)
 {
+    if (gMin(h) <= 0)
+    {
+        FatalErrorIn("RSWEFoam.C") << "Can't calculate cases h <=0 without dryZoneCondition = true." << nl << exit(FatalError);
+    }
+    Info << gMin(h) << endl;
     tau = alpha*hQGD_/sqrt(magg*h);
 }
 else
@@ -74,6 +78,9 @@ if (wellBalancedScheme)
     
     hSumY = fvc::surfaceIntegrate(hf * mesh.Sf().component(vector::Y));
 	hhSumY = 0.5*fvc::surfaceIntegrate(hf * hf * mesh.Sf().component(vector::Y));
+    
+    hSumZ = fvc::surfaceIntegrate(hf * mesh.Sf().component(vector::Z));
+	hhSumZ = 0.5*fvc::surfaceIntegrate(hf * hf * mesh.Sf().component(vector::Z));
 
 	forAll(h_,celli)
 	{
@@ -84,7 +91,6 @@ if (wellBalancedScheme)
 		else
 		{
             h_[celli].component(vector::X) = h[celli];
-			//h_[celli] = h[celli];
 		}
         if (mag(hSumY[celli]) > 1e-15)
 		{
@@ -93,7 +99,14 @@ if (wellBalancedScheme)
 		else
 		{
             h_[celli].component(vector::Y) = h[celli];
-			//h_[celli] = h[celli];
+		}
+        if (mag(hSumZ[celli]) > 1e-15)
+		{
+            h_[celli].component(vector::Z) = hhSumZ[celli] / hSumZ[celli];
+		}
+		else
+		{
+            h_[celli].component(vector::Z) = h[celli];
 		}
 	}
     
@@ -104,25 +117,11 @@ if (wellBalancedScheme)
     vector e3(0, 0, 1);
     
     ghGradB =  e1 * magg * h_.component(vector::X) * gradB.component(vector::X) + e2 * magg * h_.component(vector::Y) * gradB.component(vector::Y) + 
-            e3 * magg * h * gradB.component(vector::Z);   
-    
-    
-    //ghGradB.value().component(vector::X) = magg * h_.component(vector::X) * gradB.component(vector::X);
-    //ghGradB.value().component(vector::Y) = magg * h_.component(vector::Y) * gradB.component(vector::Y);
-    //ghGradB.value().component(vector::Z) = magg * h;//* gradB.component(vector::Z);
-    
-    //volVectorField newGradB = ghGradB / magg;
-    
-    //Info << "h - hx -> " << mag(h_.component(vector::X) - h) << endl << endl;
-	//Info << "h - hy -> " << mag(h_.component(vector::Y) - h) << endl << endl;
-	hStar = h_.component(vector::X);
-    
-    Info << "magg * hStar * fvc::grad(b) - ghGradB -> " << magg * hStar * fvc::grad(b) - ghGradB << endl;
+            e3 * magg * h_.component(vector::Z) * gradB.component(vector::Z);   
 }
 else
 {
     ghGradB = magg*h*fvc::grad(b);
-	hStar = h;
 }
 
 nuf = tauf * magg * hf;

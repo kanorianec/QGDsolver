@@ -70,7 +70,7 @@ surfaceVectorField hUf
 surfaceVectorField hW
 (
     "hW",
-    hUf ///!!!tauQGDf*gradPf
+    hUf
 );
 
 surfaceVectorField jm
@@ -104,9 +104,6 @@ surfaceTensorField UhUf
     linearInterpolate(U*hU)
 );
 
-//Info << h << endl;
-//
-    //+
 surfaceTensorField Pif
 (
     "Pif",
@@ -121,16 +118,9 @@ surfaceTensorField Pif
     tauf *
     (
 		I * ( magg * hf * divhUf)
-        //I * ( magg * hf * ((Uf & gradhf) + (hf * divUf)))
     )
 );
 
-/*surfaceTensorField PiNSf
-(
-    "PiNSf",
-    // NS Pi
-	Pif
-);*/
 
 surfaceVectorField phiPi
 (
@@ -138,13 +128,6 @@ surfaceVectorField phiPi
     mesh.Sf() & Pif
 );
 
-/*
-surfaceScalarField phiw
-(
-    "phiwStar",
-    mesh.Sf() & hW
-);
-*/
 //---------End---------
 
 

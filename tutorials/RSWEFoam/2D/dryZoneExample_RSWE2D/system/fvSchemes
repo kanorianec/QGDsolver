@@ -10,16 +10,44 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    object      shallowWaterProperties;
+    object      fvSchemes;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-QGD
+ddtSchemes
 {
-    QGDCoeffs		RSWETau;
+    default         Euler;//CrankNicolson 0.9;
 }
 
-alpha        0.2;
-//NS	     0.5;
+gradSchemes
+{
+    default         Gauss linear;
+}
+
+divSchemes
+{
+    default         Gauss linear;
+    //div(phiv,hU)    Gauss linear; //LUST un;
+}
+
+laplacianSchemes
+{
+    default         Gauss linear uncorrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         uncorrected;
+}
+fvsc
+{
+    default	    leastSquares;
+}
+
 
 // ************************************************************************* //
