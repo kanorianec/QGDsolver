@@ -10,59 +10,38 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    object      blockMeshDict;
+    object      controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-scale   1;
+application     RSWEFoam;
 
-vertices
-(
-    (0 0 0)
-    (20 0 0)
-    (20 20 0)
-    (0 20 0)
-    (0 0 0.1)
-    (20 0 0.1)
-    (20 20 0.1)
-    (0 20 0.1)
-);
+startFrom       startTime;
 
-blocks
-(
-    hex (0 1 2 3 4 5 6 7) (100 100 1) simpleGrading (1 1 1)
-);
+startTime       0;
 
-edges
-(
-);
+stopAt          endTime;
 
-boundary
-(
-    walls
-    {
-        type wall;
-        faces
-        (
-	    (0 4 7 3)
-	    (1 5 4 0)
-	    (3 7 6 2)
-	    (1 2 6 5)
-        );
-    }
-    frontAndBack
-    {
-        type empty;
-        faces
-        (
-            (0 3 2 1)
-            (4 5 6 7)
-        );
-    }
-);
+endTime         3;
 
-mergePatchPairs
-(
-);
+deltaT          0.0005;
+
+writeControl    runTime;
+
+writeInterval   0.1;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  15;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable false;
 
 // ************************************************************************* //

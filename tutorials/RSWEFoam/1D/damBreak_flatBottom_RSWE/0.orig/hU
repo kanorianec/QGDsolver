@@ -21,9 +21,13 @@ internalField   uniform (0.0 0 0);
 
 boundaryField
 {
-    walls
+    inlet
     {
-        type            slip;
+        type            zeroGradient;
+    }
+    outlet
+    {
+        type            zeroGradient;
     }
     frontAndBack
     {
