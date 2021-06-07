@@ -20,7 +20,6 @@ QGD
 }
 
 alpha        0.2;
-wellBalancedScheme	true;
 dryZoneCondition	true;
 eps0		1e-5;
 tauU		1.0;
