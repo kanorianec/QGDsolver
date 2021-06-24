@@ -38,6 +38,8 @@ Description
 // Height
 hf = qgdInterpolate(h);
 
+bf = qgdInterpolate(b);
+
 // Velocity
 Uf = qgdInterpolate(U);
 
@@ -71,8 +73,63 @@ else
 
 tauf = qgdInterpolate(tau);
 
+//volVectorField gradB = fvc::grad(b);
+
+
+
+//for( label i=0; i < mesh.nInternalFaces(); i++)
+//{
+//    if (h[own[i]] <= epsilon[own[i]] || h[nei[i]] <= epsilon[nei[i]])
+//    {
+//        bf[i] = 0.0;
+//        //-hf[i]*hf[i]/2;
+//    }    
+//    // some operation of volfield[own[i]] and volfield[nei[i]]
+//}
+
+volVectorField gradB = fvc::div(bf * mesh.Sf());
+
 if (wellBalancedScheme)
 {
+    //hSumX = dimensionedScalar(dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 );
+    //hhSumX = dimensionedScalar(dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 );
+    //
+    //hSumY = dimensionedScalar(dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 );
+    //hhSumY = dimensionedScalar(dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 );
+    //
+    //hSumZ = dimensionedScalar(dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 );
+    //hhSumZ = dimensionedScalar(dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 );
+    //
+    //
+    //for( label i=0; i < mesh.nInternalFaces(); i++)
+    //{
+    //    if (h[nei[i]] > epsilon[nei[i]] && h[own[i]] > epsilon[own[i]])
+    //    {
+    //        hSumX[nei[i]]-= hf[i] * mesh.Sf()[i].component(vector::X);
+    //        hhSumX[nei[i]]-= 0.5* hf[i] * hf[i] * mesh.Sf()[i].component(vector::X);
+    //        
+    //        hSumY[nei[i]]-= hf[i] * mesh.Sf()[i].component(vector::Y);
+    //        hhSumY[nei[i]]-= 0.5* hf[i] * hf[i] * mesh.Sf()[i].component(vector::Y);
+    //        
+    //        hSumZ[nei[i]]-= hf[i] * mesh.Sf()[i].component(vector::Z);
+    //        hhSumZ[nei[i]]-= 0.5* hf[i] * hf[i] * mesh.Sf()[i].component(vector::Z);
+    //        
+    //        hSumX[own[i]]+= hf[i] * mesh.Sf()[i].component(vector::X);
+    //        hhSumX[own[i]]+= 0.5* hf[i] * hf[i] * mesh.Sf()[i].component(vector::X);
+    //        
+    //        hSumY[own[i]]+= hf[i] * mesh.Sf()[i].component(vector::Y);
+    //        hhSumY[own[i]]+= 0.5* hf[i] * hf[i] * mesh.Sf()[i].component(vector::Y);
+    //        
+    //        hSumZ[own[i]]+= hf[i] * mesh.Sf()[i].component(vector::Z);
+    //        hhSumZ[own[i]]+= 0.5* hf[i] * hf[i] * mesh.Sf()[i].component(vector::Z);
+    //    }
+    //    /*if (h[own[i]]<eps0 || h[nei[i]]<eps0)
+    //    {
+    //        bf[i] = -hf[i]*hf[i]/2;
+    //    } */   
+    //    // some operation of volfield[own[i]] and volfield[nei[i]]
+    //}
+    
 	hSumX = fvc::surfaceIntegrate(hf * mesh.Sf().component(vector::X));
 	hhSumX = 0.5*fvc::surfaceIntegrate(hf * hf * mesh.Sf().component(vector::X));
     
@@ -84,7 +141,7 @@ if (wellBalancedScheme)
 
 	forAll(h_,celli)
 	{
-		if (mag(hSumX[celli]) > 1e-15)
+		if (mag(hSumX[celli]) > 1e-15 && h[celli] > epsilon[celli])
 		{
 			h_[celli].component(vector::X) = hhSumX[celli] / hSumX[celli];           
 		}
@@ -92,15 +149,15 @@ if (wellBalancedScheme)
 		{
             h_[celli].component(vector::X) = h[celli];
 		}
-        if (mag(hSumY[celli]) > 1e-15)
+        if (mag(hSumY[celli]) > 1e-15 && h[celli] > epsilon[celli])
 		{
-            h_[celli].component(vector::Y) = hhSumY[celli] / hSumY[celli];
+            h_[celli].component(vector::Y ) = hhSumY[celli] / hSumY[celli];
 		}
 		else
 		{
             h_[celli].component(vector::Y) = h[celli];
 		}
-        if (mag(hSumZ[celli]) > 1e-15)
+        if (mag(hSumZ[celli]) > 1e-15 && h[celli] > epsilon[celli])
 		{
             h_[celli].component(vector::Z) = hhSumZ[celli] / hSumZ[celli];
 		}
@@ -109,8 +166,7 @@ if (wellBalancedScheme)
             h_[celli].component(vector::Z) = h[celli];
 		}
 	}
-    
-    volVectorField gradB = fvc::grad(b);
+       
     
     vector e1(1, 0, 0);
     vector e2(0, 1, 0);
@@ -121,7 +177,7 @@ if (wellBalancedScheme)
 }
 else
 {
-    ghGradB = magg*h*fvc::grad(b);
+    ghGradB = magg*h*gradB;
 }
 
 nuf = tauf * magg * hf;

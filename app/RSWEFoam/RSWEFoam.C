@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
         Info<< "\n Time = " << runTime.timeName() << nl << endl;
 
         #include "CourantNo.H"		
+            
         
 		solve
 		(
@@ -108,7 +109,15 @@ int main(int argc, char *argv[])
 			+
 			fvc::div(phiJm)
 		);		
-		
+        
+        h.max(0.0);
+        
+        //Info << "fvc::div(phiPi):" << fvc::div(phiPi) << nl;
+        //Info << "phiJmU:" <<  phiJmU << nl;
+        //Info << "NS * divPiNS:" <<  NS * divPiNS << nl;
+        //Info << "0.5 * magg * fvc::div(phih2) + ghGradB:" <<  max(mag(0.5 * magg * fvc::div(phih2) + ghGradB)) << nl;
+        
+        		
 		solve
 		(
 			fvm::ddt(hU)
@@ -123,7 +132,8 @@ int main(int argc, char *argv[])
 			- 
 			NS * divPiNS
 		);
-		
+        
+        	
         if (!dryZoneCondition)
         {
             if (gMin(h) <= 0)
@@ -140,11 +150,48 @@ int main(int argc, char *argv[])
             {
                 if (h[celli] <= epsilon[celli]) 
                 {
-                    U[celli] = Zero;
-                    hU[celli] = Zero;
+                    U[celli] = vector::zero;
+                    hU[celli] = vector::zero;
                 }
-            }
-        }        
+            }   
+            /*forAll(mesh.boundary(), patchID) 
+            {
+                forAll (mesh.boundary()[patchID],facei) 
+                {                 
+                    if (h.boundaryField()[patchID][facei] <= eps0) 
+                    {
+                        U.boundaryFieldRef()[patchID][facei] = vector::zero;
+                        hU.boundaryFieldRef()[patchID][facei] = vector::zero;
+                    }
+                    Info << patchID << " " << facei << " " << h.boundaryField()[patchID][facei]  << " " << U.boundaryField()[patchID][facei] << " " << hU.boundaryField()[patchID][facei] << nl;
+                }
+            }*/            
+        }    
+
+        //volVectorField tmp =  0.5 * magg * fvc::div(phih2);
+        //
+        /*
+        for( label i=0; i < mesh.nInternalFaces(); i++)
+        {
+            if (h[own[i]] < epsilon[own[i]] || h[nei[i]] <  epsilon[nei[i]])
+            {
+               U[own[i]] = vector::zero;
+               U[nei[i]] = vector::zero;
+               
+               hU[own[i]] = vector::zero;
+               hU[nei[i]] = vector::zero;
+            }  
+        }    
+        */
+        //for( label i=0; i < mesh.nInternalFaces(); i++)
+        //{
+        //    if (h[nei[i]] <= epsilon[nei[i]] && mag(U[own[i]]) > 0 )
+        //    {
+        //       Info << "tmp[own[i]] + ghGradB[own[i]]: " << tmp[own[i]] + ghGradB[own[i]] << nl;
+        //       Info << "U: " << U[own[i]] << nl;
+        //       Info << "h+b: " << gradB[own[i]] + b[own[i]] << nl;
+        //    }  
+        //}        
 		
         
 		ksi == b + h;

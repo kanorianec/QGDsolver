@@ -44,6 +44,13 @@ surfaceScalarField hf
     linearInterpolate(h)
 );
 
+// bathymetry
+surfaceScalarField bf
+(
+    "bf",
+    linearInterpolate(b)
+);
+
 surfaceScalarField tauf
 (
     "tauf",
@@ -62,5 +69,13 @@ surfaceVectorField phih2
     hf*hf*mesh.Sf()
 );
 
+surfaceVectorField phib
+(
+    "phib",
+    bf*mesh.Sf()
+);
+
+const labelList & own(mesh.owner());
+const labelList & nei(mesh.neighbour());
 
 // ************************************************************************* //
