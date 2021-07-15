@@ -76,16 +76,32 @@ tauf = qgdInterpolate(tau);
 //volVectorField gradB = fvc::grad(b);
 
 
+if (dryZoneCondition)
+{
+    for( label i=0; i < mesh.nInternalFaces(); i++)
+    {
+        if (h[own[i]] <= epsilon[own[i]])
+        {
+            
+        }
+        //if (h[own[i]] <= epsilon[own[i]] || h[nei[i]] <= epsilon[nei[i]])
+        //if (h[own[i]] <= epsilon[own[i]])
+        //{
+        //    bf[i] =  max(ksi[nei[i]] - hf[i], bf[i]); //h[nei[i]] + b[nei[i]]
+        //    //-hf[i]*hf[i]/2;
+        //} 
+        //if (h[nei[i]] <= epsilon[nei[i]])
+        //{
+        //    bf[i] =  max(ksi[own[i]] - hf[i], bf[i]); // h[own[i]] + b[own[i]]
+        //    //-hf[i]*hf[i]/2;
+        //}     
+        // some operation of volfield[own[i]] and volfield[nei[i]]
+    }
+}
 
-//for( label i=0; i < mesh.nInternalFaces(); i++)
-//{
-//    if (h[own[i]] <= epsilon[own[i]] || h[nei[i]] <= epsilon[nei[i]])
-//    {
-//        bf[i] = 0.0;
-//        //-hf[i]*hf[i]/2;
-//    }    
-//    // some operation of volfield[own[i]] and volfield[nei[i]]
-//}
+vector e1(1, 0, 0);
+vector e2(0, 1, 0);
+vector e3(0, 0, 1);
 
 volVectorField gradB = fvc::div(bf * mesh.Sf());
 
@@ -99,8 +115,8 @@ if (wellBalancedScheme)
     //
     //hSumZ = dimensionedScalar(dimensionSet(0, 0, 0, 0, 0, 0, 0), 0.0 );
     //hhSumZ = dimensionedScalar(dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0 );
-    //
-    //
+    
+    
     //for( label i=0; i < mesh.nInternalFaces(); i++)
     //{
     //    if (h[nei[i]] > epsilon[nei[i]] && h[own[i]] > epsilon[own[i]])
@@ -166,11 +182,6 @@ if (wellBalancedScheme)
             h_[celli].component(vector::Z) = h[celli];
 		}
 	}
-       
-    
-    vector e1(1, 0, 0);
-    vector e2(0, 1, 0);
-    vector e3(0, 0, 1);
     
     ghGradB =  e1 * magg * h_.component(vector::X) * gradB.component(vector::X) + e2 * magg * h_.component(vector::Y) * gradB.component(vector::Y) + 
             e3 * magg * h_.component(vector::Z) * gradB.component(vector::Z);   

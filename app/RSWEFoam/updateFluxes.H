@@ -43,6 +43,22 @@ gradksif = fvsc::grad(ksi);
 //---------End---------
 
 //Continuity equation fluxes
+/*
+for( label i=0; i < mesh.nInternalFaces(); i++)
+{
+    surfaceScalarField temp = gradksif & mesh.Sf();
+    
+    if (h[own[i]] <= epsilon[own[i]] && temp[i] > 0 || h[nei[i]] <= epsilon[nei[i]] && temp[i] < 0)
+    {
+        gradksif[i] =  vector(0, 0, 0);
+    }
+    //if (h[own[i]] <= epsilon[own[i]] || h[nei[i]] <= epsilon[nei[i]])
+    //{
+    //    gradksif[i] =  vector(0, 0, 0); 
+    //}     
+    // some operation of volfield[own[i]] and volfield[nei[i]]
+}
+*/
 
 hW = tauf *
         (
@@ -61,6 +77,42 @@ phiJm = mesh.Sf() & jm;
 		
 // Fluxes for momentum balance equation
 //---------Start---------
+
+for( label i=0; i < mesh.nInternalFaces(); i++)
+{
+    //Info << i << " " << own[i]  << " " << nei[i] << " " << phiJm[i] << nl;
+    if (h[own[i]] <= epsilon[own[i]] && phiJm[i] > 0.0 || h[nei[i]] <= epsilon[nei[i]] && phiJm[i] < 0.0)
+    {
+        phiJm[i] = 0.0;
+    }
+    if (h[own[i]] <= epsilon[own[i]] || h[nei[i]] <= epsilon[nei[i]])
+    {
+        tauf[i] = 0.0;
+    }
+    
+    /*
+    if (h[own[i]]<eps0 || h[nei[i]]<eps0)
+    {
+        ghGradB[own[i]] = vector(0, 0, 0);
+        ghGradB[nei[i]] = vector(0, 0, 0);
+    }
+    */
+    /*
+    if (h[own[i]]<eps0 && h[nei[i]]<eps0)
+    {
+        phiJm[i] = 0;
+    }
+    */
+    /*
+    if (h[own[i]] < epsilon[own[i]] || h[nei[i]] <  epsilon[nei[i]])
+    {
+        phih2[i] = vector(0, 0, 0);
+        phiPi[i] = vector(0, 0, 0);
+        phiJmU[i] = vector(0, 0, 0);
+    }
+    */
+    // some operation of volfield[own[i]] and volfield[nei[i]]
+}
 
 phih2 = mesh.Sf() * hf * hf;
 
@@ -83,35 +135,7 @@ phiPi = mesh.Sf() & Pif;
 phiJmU = qgdFlux(phiJm,U,Uf);
 
 
-for( label i=0; i < mesh.nInternalFaces(); i++)
-{
-    //Info << i << " " << own[i]  << " " << nei[i] << " " << phiJm[i] << nl;
-    if (h[own[i]] <= epsilon[own[i]] && phiJm[i] > 0 || h[nei[i]] <= epsilon[nei[i]] && phiJm[i] < 0)
-    {
-        phiJm[i] = 0;
-    }
-    /*
-    if (h[own[i]]<eps0 || h[nei[i]]<eps0)
-    {
-        ghGradB[own[i]] = vector(0, 0, 0);
-        ghGradB[nei[i]] = vector(0, 0, 0);
-    }
-    */
-    /*
-    if (h[own[i]]<eps0 && h[nei[i]]<eps0)
-    {
-        phiJm[i] = 0;
-    }
-    */
-    if (h[own[i]] < epsilon[own[i]] || h[nei[i]] <  epsilon[nei[i]])
-    {
-        phih2[i] = vector(0, 0, 0);
-        phiPi[i] = vector(0, 0, 0);
-        phiJmU[i] = vector(0, 0, 0);
-    }
-    
-    // some operation of volfield[own[i]] and volfield[nei[i]]
-}
+
 
 
 //---------End---------	

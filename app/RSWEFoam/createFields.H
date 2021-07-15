@@ -231,12 +231,12 @@ if (dryZoneCondition)
         
         labelList neighbours = mesh.cellCells()[cellI];
         scalar deltaB = 0.0;
-        
+        /*
         forAll(neighbours,cellJ)
         {
             deltaB = max(deltaB,mag(b[neighbours[cellJ]] - b[cellI]));
         }
-        
+        */
         epsilon[cellI] = max(eps0,deltaB);
 	}
 }

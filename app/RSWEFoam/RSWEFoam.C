@@ -117,16 +117,20 @@ int main(int argc, char *argv[])
         //Info << "NS * divPiNS:" <<  NS * divPiNS << nl;
         //Info << "0.5 * magg * fvc::div(phih2) + ghGradB:" <<  max(mag(0.5 * magg * fvc::div(phih2) + ghGradB)) << nl;
         
-        		
+        	
+        dimensionedScalar n = dimensionedScalar("h0",  dimensionSet(0, -1.0/3.0, 1.0, 0, 0, 0, 0), 0.018);
+            
 		solve
 		(
 			fvm::ddt(hU)
 			+
 			fvc::div(phiJmU)
 			+ 
-			0.5 * magg * fvc::div(phih2)
+            0.5 * magg * fvc::div(phih2)
 			+ 
             ghGradB
+            +
+            magg * n * n * hU * mag(U)/pow(max(h,dimensionedScalar("h0", dimLength, 1e-6)),4.0/3.0) //max(h,dimensionedScalar("h0", dimLength, eps0))
 			-
 			fvc::div(phiPi)
 			- 
@@ -153,8 +157,9 @@ int main(int argc, char *argv[])
                     U[celli] = vector::zero;
                     hU[celli] = vector::zero;
                 }
-            }   
-            /*forAll(mesh.boundary(), patchID) 
+            }  
+            /*
+            forAll(mesh.boundary(), patchID) 
             {
                 forAll (mesh.boundary()[patchID],facei) 
                 {                 
@@ -163,9 +168,9 @@ int main(int argc, char *argv[])
                         U.boundaryFieldRef()[patchID][facei] = vector::zero;
                         hU.boundaryFieldRef()[patchID][facei] = vector::zero;
                     }
-                    Info << patchID << " " << facei << " " << h.boundaryField()[patchID][facei]  << " " << U.boundaryField()[patchID][facei] << " " << hU.boundaryField()[patchID][facei] << nl;
+                    //Info << patchID << " " << facei << " " << h.boundaryField()[patchID][facei]  << " " << U.boundaryField()[patchID][facei] << " " << hU.boundaryField()[patchID][facei] << nl;
                 }
-            }*/            
+            }   */      
         }    
 
         //volVectorField tmp =  0.5 * magg * fvc::div(phih2);
@@ -173,7 +178,7 @@ int main(int argc, char *argv[])
         /*
         for( label i=0; i < mesh.nInternalFaces(); i++)
         {
-            if (h[own[i]] < epsilon[own[i]] || h[nei[i]] <  epsilon[nei[i]])
+            if (h[own[i]] <= epsilon[own[i]] || h[nei[i]] <=  epsilon[nei[i]])
             {
                U[own[i]] = vector::zero;
                U[nei[i]] = vector::zero;
